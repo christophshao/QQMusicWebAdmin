@@ -1,0 +1,122 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.javaclient.qqmusicwebserver.dao.SongListMapper">
+    <resultMap id="BaseResultMap" type="com.javaclient.qqmusicwebserver.domain.SongList">
+        <!--column是数据库里的，property是映射的domain中的-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="style" jdbcType="VARCHAR" property="style"/>
+
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.javaclient.qqmusicwebserver.domain.SongList" extends="BaseResultMap">
+        <result column="introduction" jdbcType="LONGVARCHAR" property="introduction"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,pic,style
+    </sql>
+
+    <sql id="Blob_Column_List">
+        id,title,pic,style,introduction
+    </sql>
+
+<!--    添加歌单 insert-->
+    <insert id="insertSongList" parameterType="com.javaclient.qqmusicwebserver.domain.SongList">
+        insert into song_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="pic != null">
+                pic,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+            <if test="style != null">
+                style,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="title != null">
+                #{title},
+            </if>
+            <if test="pic != null">
+                #{pic},
+            </if>
+            <if test="introduction != null">
+                #{introduction},
+            </if>
+            <if test="style != null">
+                #{style},
+            </if>
+        </trim>
+    </insert>
+
+<!--   删除歌单，delete -->
+    <delete id="deleteSongList" parameterType="java.lang.Integer">
+        delete from song_list
+        where id=#{id}
+    </delete>
+
+<!--   修改歌单,update-->
+    <update id="updateSongList" parameterType="com.javaclient.qqmusicwebserver.domain.SongList">
+        update song_list
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="pic != null">
+                pic = #{pic},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction},
+            </if>
+            <if test="style != null">
+                style = #{style},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+<!--   查询所有歌单，-->
+    <select id="selectAllSongList" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Blob_Column_List"/>
+        from song_list
+    </select>
+
+<!--根据标题精确查询歌单-->
+    <select id="selectSongListOfTitle" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+    select
+    <include refid="Blob_Column_List"/>
+    from song_list
+    where title = #{title}
+</select>
+
+<!--   根据名字模糊查询歌单-->
+    <select id="likeTitle" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select
+        <include refid="Blob_Column_List"/>
+        from song_list
+        where title like #{title}
+    </select>
+
+    <!--    根据歌单风格查询歌单-->
+    <select id="likeStyle" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select
+        <include refid="Blob_Column_List"/>
+        from song_list
+        where style like #{style}
+    </select>
+</mapper>
+

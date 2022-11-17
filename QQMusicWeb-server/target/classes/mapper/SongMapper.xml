@@ -1,0 +1,144 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.javaclient.qqmusicwebserver.dao.SongMapper">
+    <resultMap id="BaseResultMap" type="com.javaclient.qqmusicwebserver.domain.Song">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <!--column是数据库里的，property是映射的domain中的-->
+        <result column="singer_id" jdbcType="VARCHAR" property="singerId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+        <result column="create_time"  jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+
+    </resultMap>
+    <resultMap id="ResultMapwithBLOBs" type="com.javaclient.qqmusicwebserver.domain.Song" extends="BaseResultMap">
+        <result column="lyric" jdbcType="LONGVARCHAR" property="lyric"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,singer_id,name,introduction,create_time,update_time,pic,url
+    </sql>
+    <sql id="Blob_Column_List">
+        id,singer_id,name,introduction,create_time,update_time,pic,lyric,url
+    </sql>
+
+<!--    添加歌曲 insert-->
+    <insert id="insertSong" parameterType="com.javaclient.qqmusicwebserver.domain.Song">
+        insert into song
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="singerId != null">
+                singer_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+            create_time,update_time,
+            <if test="pic != null">
+                pic,
+            </if>
+            <if test="lyric != null">
+                lyric,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="singerId != null">
+                #{singerId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="introduction != null">
+                #{introduction},
+            </if>
+            now(),now(),
+            <if test="pic != null">
+                #{pic},
+            </if>
+            <if test="lyric != null">
+                #{lyric},
+            </if>
+            <if test="url != null">
+                #{url},
+            </if>
+        </trim>
+    </insert>
+
+<!--   删除歌手，delete -->
+    <delete id="deleteSong" parameterType="java.lang.Integer">
+        delete from song where id = #{id}
+    </delete>
+
+<!--   修改歌手,update-->
+    <update id="updateSong" parameterType="com.javaclient.qqmusicwebserver.domain.Song">
+        update song
+        <set>
+            <if test="singerId != null">
+               singer_id = #{singerId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction},
+            </if>
+            update_time = now(),
+            <if test="pic != null">
+                pic = #{pic},
+            </if>
+            <if test="lyric != null">
+                lyric = #{lyric},
+            </if>
+            <if test="url != null">
+                url = #{url},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+<!--   查询所有歌手，-->
+    <select id="selectAllSong" resultMap="ResultMapwithBLOBs">
+        select
+        <include refid="Blob_Column_List"></include>
+        from song
+    </select>
+
+<!--    根据主键查询-->
+    <select id="selectByPrimaryKey" resultMap="ResultMapwithBLOBs" parameterType="java.lang.Integer">
+        select 
+        <include refid="Blob_Column_List"/>
+        from  song
+        where id = #{id}
+    </select>
+<!--   根据名字模糊查询歌手-->
+    <select id="selectSongByName" resultMap="ResultMapwithBLOBs">
+        select
+        <include refid="Blob_Column_List"/>
+        from song
+        where name = #{name}
+    </select>
+
+    <!--    根据歌手id查询歌曲-->
+    <select id="selectSongBySingerId" resultMap="ResultMapwithBLOBs">
+        select
+        <include refid="Blob_Column_List"/>
+        from song
+        where singer_id = #{singerId}
+    </select>
+</mapper>
+
