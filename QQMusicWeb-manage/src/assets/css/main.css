@@ -1,0 +1,32 @@
+/* 按钮背景 */
+.container{
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.content-box{
+    position: absolute;
+    left: 150px;
+    right: 0;
+    top: 70px;
+    bottom: 0;
+    overflow-y: scroll;
+    transition: left .3s ease-in-out;
+    background: #f0f0f0;
+}
+
+.content-collapse{
+    left: 65px;
+}
+
+/* 表单 */
+.el-select{
+    width: 100%;
+}
+.table{
+    min-width: 800px;
+}
+.el-dialog_body{
+    padding: 10px 20px 0px 10px;
+}
